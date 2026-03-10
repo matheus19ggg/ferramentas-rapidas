@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Unidades - Ferramentas Rápidas</title>
+    <meta name="description" content="Converta unidades de comprimento, peso e temperatura de forma rápida e precisa.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Conversor de Unidades</h1>
+            <p>Converta rapidamente entre diferentes unidades de medida.</p>
+        </section>
+
+        <div class="tool-container">
+            <div class="input-group">
+                <label for="category">Categoria:</label>
+                <select id="category">
+                    <option value="length">Comprimento (m, cm, km, mi, ft)</option>
+                    <option value="weight">Peso (kg, g, lb, oz)</option>
+                    <option value="temp">Temperatura (°C, °F, K)</option>
+                </select>
+            </div>
+
+            <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                <div class="input-group">
+                    <label for="fromValue">De:</label>
+                    <input type="number" id="fromValue" value="1">
+                    <select id="fromUnit" style="margin-top: 0.5rem;"></select>
+                </div>
+                <div class="input-group">
+                    <label for="toValue">Para:</label>
+                    <input type="number" id="toValue" readonly style="background: #f8fafc;">
+                    <select id="toUnit" style="margin-top: 0.5rem;"></select>
+                </div>
+            </div>
+        </div>
+
+        <section class="tool-info" style="margin-top: 3rem;">
+            <h2>Como usar o conversor?</h2>
+            <p>Selecione a categoria desejada (Comprimento, Peso ou Temperatura), escolha as unidades de origem e destino e digite o valor que deseja converter. O resultado aparecerá instantaneamente.</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const categorySelect = document.getElementById('category');
+        const fromValueInput = document.getElementById('fromValue');
+        const toValueInput = document.getElementById('toValue');
+        const fromUnitSelect = document.getElementById('fromUnit');
+        const toUnitSelect = document.getElementById('toUnit');
+
+        const units = {
+            length: {
+                m: 1,
+                cm: 0.01,
+                km: 1000,
+                mm: 0.001,
+                mi: 1609.34,
+                ft: 0.3048,
+                in: 0.0254
+            },
+            weight: {
+                kg: 1,
+                g: 0.001,
+                mg: 0.000001,
+                lb: 0.453592,
+                oz: 0.0283495
+            },
+            temp: {
+                C: 'C',
+                F: 'F',
+                K: 'K'
+            }
+        };
+
+        const unitLabels = {
+            m: 'Metros (m)',
+            cm: 'Centímetros (cm)',
+            km: 'Quilômetros (km)',
+            mm: 'Milímetros (mm)',
+            mi: 'Milhas (mi)',
+            ft: 'Pés (ft)',
+            in: 'Polegadas (in)',
+            kg: 'Quilogramas (kg)',
+            g: 'Gramas (g)',
+            mg: 'Miligramas (mg)',
+            lb: 'Libras (lb)',
+            oz: 'Onças (oz)',
+            C: 'Celsius (°C)',
+            F: 'Fahrenheit (°F)',
+            K: 'Kelvin (K)'
+        };
+
+        function populateUnits() {
+            const category = categorySelect.value;
+            const categoryUnits = units[category];
+            
+            fromUnitSelect.innerHTML = '';
+            toUnitSelect.innerHTML = '';
+
+            Object.keys(categoryUnits).forEach(unit => {
+                const optionFrom = document.createElement('option');
+                optionFrom.value = unit;
+                optionFrom.textContent = unitLabels[unit];
+                fromUnitSelect.appendChild(optionFrom);
+
+                const optionTo = document.createElement('option');
+                optionTo.value = unit;
+                optionTo.textContent = unitLabels[unit];
+                toUnitSelect.appendChild(optionTo);
+            });
+
+            // Set different default toUnit if possible
+            if (toUnitSelect.options.length > 1) {
+                toUnitSelect.selectedIndex = 1;
+            }
+            convert();
+        }
+
+        function convert() {
+            const category = categorySelect.value;
+            const fromValue = parseFloat(fromValueInput.value);
+            const fromUnit = fromUnitSelect.value;
+            const toUnit = toUnitSelect.value;
+
+            if (isNaN(fromValue)) {
+                toValueInput.value = '';
+                return;
+            }
+
+            if (category === 'temp') {
+                let celsius;
+                if (fromUnit === 'C') celsius = fromValue;
+                else if (fromUnit === 'F') celsius = (fromValue - 32) * 5 / 9;
+                else if (fromUnit === 'K') celsius = fromValue - 273.15;
+
+                let result;
+                if (toUnit === 'C') result = celsius;
+                else if (toUnit === 'F') result = (celsius * 9 / 5) + 32;
+                else if (toUnit === 'K') result = celsius + 273.15;
+                
+                toValueInput.value = result.toFixed(2);
+            } else {
+                const baseValue = fromValue * units[category][fromUnit];
+                const result = baseValue / units[category][toUnit];
+                toValueInput.value = result.toLocaleString('pt-BR', { maximumFractionDigits: 6 });
+            }
+        }
+
+        categorySelect.addEventListener('change', populateUnits);
+        fromValueInput.addEventListener('input', convert);
+        fromUnitSelect.addEventListener('change', convert);
+        toUnitSelect.addEventListener('change', convert);
+
+        // Initial population
+        populateUnits();
+    </script>
+</body>
+</html>

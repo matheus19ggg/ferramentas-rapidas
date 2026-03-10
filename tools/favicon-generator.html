@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Favicon - Ferramentas Rápidas</title>
+    <meta name="description" content="Converta suas imagens em favicons (.ico) de forma rápida e gratuita. Ideal para desenvolvedores web e donos de sites.">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                    <li><a href="../politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1>Gerador de Favicon</h1>
+                <p style="color: var(--text-muted);">Envie uma imagem e gere um favicon de 32x32 pixels pronto para o seu site.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="image-input">Selecione uma imagem (PNG, JPG, WEBP):</label>
+                <input type="file" id="image-input" accept="image/*">
+            </div>
+
+            <div id="preview-container" style="display: none; text-align: center; margin-bottom: 30px;">
+                <p style="margin-bottom: 15px; font-weight: 600;">Prévia do Favicon (32x32):</p>
+                <div style="padding: 20px; background: #f1f5f9; border-radius: 12px; display: inline-block;">
+                    <canvas id="favicon-canvas" width="32" height="32" style="border: 1px solid #ccc; image-rendering: pixelated;"></canvas>
+                </div>
+            </div>
+
+            <button id="download-btn" class="btn" style="width: 100%; display: none;">Baixar Favicon (.png)</button>
+            <p id="note" style="display: none; margin-top: 15px; font-size: 0.85rem; color: var(--text-muted); text-align: center;">Nota: O arquivo será baixado como PNG de 32x32, que é amplamente aceito como favicon pelos navegadores modernos.</p>
+
+            <canvas id="hidden-canvas" style="display: none;"></canvas>
+        </div>
+    </main>
+
+    <script>
+        const input = document.getElementById('image-input');
+        const canvas = document.getElementById('favicon-canvas');
+        const downloadBtn = document.getElementById('download-btn');
+        const previewContainer = document.getElementById('preview-container');
+        const note = document.getElementById('note');
+
+        input.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const ctx = canvas.getContext('2d');
+                        ctx.clearRect(0, 0, 32, 32);
+                        
+                        // Desenhar imagem redimensionada no canvas 32x32
+                        ctx.drawImage(img, 0, 0, 32, 32);
+                        
+                        previewContainer.style.display = 'block';
+                        downloadBtn.style.display = 'block';
+                        note.style.display = 'block';
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = 'favicon.png';
+            link.href = dataUrl;
+            link.click();
+        });
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Link para WhatsApp - Ferramentas Rápidas</title>
+    <meta name="description" content="Crie links diretos para o seu WhatsApp com mensagens personalizadas. Ideal para bio do Instagram, anúncios e sites.">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                    <li><a href="../politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1>Gerador de Link para WhatsApp</h1>
+                <p style="color: var(--text-muted);">Crie um link curto wa.me para facilitar o contato dos seus clientes.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="phone">Número do WhatsApp (com DDD):</label>
+                <input type="tel" id="phone" placeholder="Ex: 11999999999" maxlength="11">
+                <small style="color: var(--text-muted);">Apenas números, sem espaços ou parênteses.</small>
+            </div>
+
+            <div class="input-group">
+                <label for="message">Mensagem Padrão (Opcional):</label>
+                <textarea id="message" rows="4" placeholder="Olá! Gostaria de mais informações sobre..."></textarea>
+            </div>
+
+            <button class="btn" onclick="generateLink()" style="width: 100%;">Gerar Link</button>
+
+            <div id="result-container" class="results" style="display: none;">
+                <label>Seu Link:</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" id="result-link" readonly>
+                    <button class="btn btn-secondary" onclick="copyLink()">Copiar</button>
+                </div>
+                <a id="test-link" href="#" target="_blank" class="btn" style="width: 100%; background-color: #25d366;">Testar no WhatsApp</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function generateLink() {
+            const phone = document.getElementById('phone').value.replace(/\D/g, '');
+            const message = encodeURIComponent(document.getElementById('message').value);
+            
+            if (phone.length < 10) {
+                alert('Por favor, insira um número de telefone válido com DDD.');
+                return;
+            }
+
+            const link = `https://wa.me/55${phone}${message ? '?text=' + message : ''}`;
+            
+            document.getElementById('result-link').value = link;
+            document.getElementById('test-link').href = link;
+            document.getElementById('result-container').style.display = 'block';
+        }
+
+        function copyLink() {
+            const el = document.getElementById('result-link');
+            el.select();
+            document.execCommand('copy');
+            alert('Link copiado com sucesso!');
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

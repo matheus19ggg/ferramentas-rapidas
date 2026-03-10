@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Juros Compostos - Ferramentas Rápidas</title>
+    <meta name="description" content="Simule o crescimento do seu dinheiro ao longo do tempo com nossa calculadora de juros compostos.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .simulator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        @media (max-width: 768px) {
+            .simulator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .input-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .input-group input, .input-group select {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+        .results-panel {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .result-item span:first-child {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        .result-item span:last-child {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .total-highlight {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        .total-highlight span:last-child {
+            color: white;
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Simulador de Juros Compostos</h1>
+            <p>Planeje seu futuro financeiro visualizando o poder dos juros sobre juros.</p>
+        </section>
+
+        <div class="simulator-container">
+            <div class="input-form">
+                <div class="input-group">
+                    <label>Investimento Inicial (R$)</label>
+                    <input type="number" id="initial" value="1000" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Aporte Mensal (R$)</label>
+                    <input type="number" id="monthly" value="100" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Taxa de Juros Anual (%)</label>
+                    <input type="number" id="interest" value="10" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Período (Anos)</label>
+                    <input type="number" id="years" value="5">
+                </div>
+            </div>
+
+            <div class="results-panel">
+                <div class="total-highlight result-item">
+                    <span>Valor Total Final</span>
+                    <span id="totalFinal">R$ 0,00</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Investido (Aportes)</span>
+                    <span id="totalInvested">R$ 0,00</span>
+                </div>
+                <div class="result-item">
+                    <span>Total em Juros</span>
+                    <span id="totalInterest">R$ 0,00</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="tool-info">
+            <h2>O que são Juros Compostos?</h2>
+            <p>Diferente dos juros simples, onde o rendimento é calculado apenas sobre o valor inicial, nos juros compostos o rendimento de cada período é somado ao capital para o cálculo do próximo período. É o famoso "juros sobre juros".</p>
+        </section>
+    </main>
+
+    <script>
+        const inputs = ['initial', 'monthly', 'interest', 'years'];
+        
+        inputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', simulate);
+        });
+
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function simulate() {
+            const initial = parseFloat(document.getElementById('initial').value) || 0;
+            const monthly = parseFloat(document.getElementById('monthly').value) || 0;
+            const annualRate = parseFloat(document.getElementById('interest').value) || 0;
+            const years = parseInt(document.getElementById('years').value) || 0;
+
+            const monthlyRate = Math.pow(1 + (annualRate / 100), 1/12) - 1;
+            const totalMonths = years * 12;
+
+            let total = initial;
+            let invested = initial;
+
+            for (let i = 0; i < totalMonths; i++) {
+                total = (total + monthly) * (1 + monthlyRate);
+                invested += monthly;
+            }
+
+            const interestEarned = total - invested;
+
+            document.getElementById('totalFinal').textContent = formatCurrency(total);
+            document.getElementById('totalInvested').textContent = formatCurrency(invested);
+            document.getElementById('totalInterest').textContent = formatCurrency(interestEarned);
+        }
+
+        simulate();
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

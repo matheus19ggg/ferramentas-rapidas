@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de CPF - Ferramentas Rápidas</title>
+    <meta name="description" content="Gere CPFs válidos para testes de software e desenvolvimento. Ferramenta gratuita e rápida.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Gerador de CPF</h1>
+            <p>Gere números de CPF válidos para testes de desenvolvimento e software.</p>
+        </section>
+
+        <div class="tool-container">
+            <div class="input-group">
+                <label for="format">Formato:</label>
+                <select id="format">
+                    <option value="formatted">Com Pontuação (000.000.000-00)</option>
+                    <option value="unformatted">Apenas Números (00000000000)</option>
+                </select>
+            </div>
+            <button id="generateBtn" class="btn-primary">Gerar CPF</button>
+
+            <div id="resultArea" class="result-container" style="display: none; margin-top: 2rem;">
+                <h3>CPF Gerado:</h3>
+                <div class="result-box" id="cpfDisplay" style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color); padding: 1rem; background: #f1f5f9; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1rem;"></div>
+                <button id="copyBtn" class="btn-secondary">Copiar CPF</button>
+            </div>
+        </div>
+
+        <section class="tool-info" style="margin-top: 3rem;">
+            <h2>Para que serve o Gerador de CPF?</h2>
+            <p>Esta ferramenta é destinada exclusivamente a desenvolvedores de software, testadores e estudantes que precisam de dados de teste válidos para validar formulários e sistemas. Os CPFs gerados seguem o algoritmo oficial de validação.</p>
+            <p><strong>Importante:</strong> O uso indevido de dados gerados é de total responsabilidade do usuário. Esta ferramenta não tem qualquer vínculo com a Receita Federal do Brasil.</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const formatSelect = document.getElementById('format');
+        const resultArea = document.getElementById('resultArea');
+        const cpfDisplay = document.getElementById('cpfDisplay');
+
+        function generateCPF() {
+            const random = (n) => Math.round(Math.random() * n);
+            const mod = (dividend, divisor) => Math.round(dividend - (Math.floor(dividend / divisor) * divisor));
+
+            const n1 = random(9);
+            const n2 = random(9);
+            const n3 = random(9);
+            const n4 = random(9);
+            const n5 = random(9);
+            const n6 = random(9);
+            const n7 = random(9);
+            const n8 = random(9);
+            const n9 = random(9);
+
+            let d1 = n9 * 2 + n8 * 3 + n7 * 4 + n6 * 5 + n5 * 6 + n4 * 7 + n3 * 8 + n2 * 9 + n1 * 10;
+            d1 = 11 - (mod(d1, 11));
+            if (d1 >= 10) d1 = 0;
+
+            let d2 = d1 * 2 + n9 * 3 + n8 * 4 + n7 * 5 + n6 * 6 + n5 * 7 + n4 * 8 + n3 * 9 + n2 * 10 + n1 * 11;
+            d2 = 11 - (mod(d2, 11));
+            if (d2 >= 10) d2 = 0;
+
+            if (formatSelect.value === 'formatted') {
+                return `${n1}${n2}${n3}.${n4}${n5}${n6}.${n7}${n8}${n9}-${d1}${d2}`;
+            } else {
+                return `${n1}${n2}${n3}${n4}${n5}${n6}${n7}${n8}${n9}${d1}${d2}`;
+            }
+        }
+
+        generateBtn.addEventListener('click', () => {
+            const cpf = generateCPF();
+            cpfDisplay.textContent = cpf;
+            resultArea.style.display = 'block';
+        });
+
+        copyBtn.addEventListener('click', () => {
+            const text = cpfDisplay.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copiado!';
+                copyBtn.style.background = '#10b981';
+                copyBtn.style.color = '#fff';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = '';
+                    copyBtn.style.color = '';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

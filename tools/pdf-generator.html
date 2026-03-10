@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de PDF Online - Criar PDF Grátis - Ferramentas Rápidas</title>
+    <meta name="description" content="Crie arquivos PDF rapidamente a partir de textos. Digite ou cole seu conteúdo e gere um documento PDF pronto para download em segundos.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .pdf-gen-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        .form-group textarea {
+            min-height: 300px;
+            resize: vertical;
+        }
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .btn-generate {
+            background: var(--primary-color);
+            color: rgb(244, 6, 6);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+            transition: opacity 0.2s;
+        }
+        .btn-generate:hover {
+            opacity: 0.9;
+        }
+        .preview-notice {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Gerador de PDF Online</h1>
+            <p>Transforme seus textos em documentos PDF profissionais de forma instantânea.</p>
+        </section>
+
+        <div class="pdf-gen-container">
+            <div class="form-group">
+                <label for="pdf-title">Título do Documento (Opcional)</label>
+                <input type="text" id="pdf-title" placeholder="Ex: Relatório de Vendas, Minha Anotação...">
+            </div>
+            <div class="form-group">
+                <label for="pdf-content">Conteúdo do PDF</label>
+                <textarea id="pdf-content" placeholder="Digite ou cole aqui o texto que deseja converter para PDF..."></textarea>
+            </div>
+            <div class="controls">
+                <button id="download-pdf" class="btn-generate">Gerar e Baixar PDF</button>
+            </div>
+            <p class="preview-notice">O arquivo será gerado localmente e o download começará automaticamente.</p>
+        </div>
+
+        <section class="tool-info">
+            <h2>Como usar o Gerador de PDF?</h2>
+            <p>Nossa ferramenta é ideal para criar documentos rápidos sem a necessidade de editores de texto complexos. Basta digitar o conteúdo desejado e clicar no botão de gerar.</p>
+            <ul>
+                <li><strong>Simplicidade:</strong> Interface limpa e direta ao ponto.</li>
+                <li><strong>Privacidade:</strong> Seu texto não é enviado para nenhum servidor; o PDF é criado no seu navegador.</li>
+                <li><strong>Portabilidade:</strong> Gere documentos compatíveis com qualquer leitor de PDF.</li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        document.getElementById('download-pdf').addEventListener('click', () => {
+            try {
+                if (!window.jspdf) {
+                    alert('A biblioteca de PDF ainda está carregando. Por favor, aguarde um momento e tente novamente.');
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                const title = document.getElementById('pdf-title').value;
+                const content = document.getElementById('pdf-content').value;
+                
+                if (!content.trim()) {
+                    alert('Por favor, insira algum conteúdo para o PDF.');
+                    return;
+                }
+
+                let yPos = 20;
+                
+                // Adicionar título se houver
+                if (title) {
+                    doc.setFontSize(22);
+                    doc.setFont("helvetica", "bold");
+                    doc.text(title, 20, yPos);
+                    yPos += 15;
+                }
+
+                // Adicionar conteúdo
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "normal");
+                
+                // Quebra de linha automática
+                const splitContent = doc.splitTextToSize(content, 170);
+                
+                // Verificar se precisa de novas páginas
+                splitContent.forEach(line => {
+                    if (yPos > 280) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.text(line, 20, yPos);
+                    yPos += 7;
+                });
+
+                const fileName = title ? `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf` : 'documento.pdf';
+                doc.save(fileName);
+            } catch (error) {
+                console.error('Erro ao gerar PDF:', error);
+                alert('Ocorreu um erro ao gerar o PDF. Verifique se o conteúdo é válido.');
+            }
+        });
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

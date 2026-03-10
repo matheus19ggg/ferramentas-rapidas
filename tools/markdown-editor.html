@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Markdown Online - Visualizador em Tempo Real - Ferramentas Rápidas</title>
+    <meta name="description" content="Escreva e visualize Markdown em tempo real. Converta Markdown para HTML instantaneamente e facilite a criação de conteúdos para web.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        .markdown-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            height: 600px;
+            background: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .editor-pane, .preview-pane {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .pane-header {
+            background: #f8fafc;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #markdown-input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            resize: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            outline: none;
+            background: #fafafa;
+        }
+        #html-preview {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background: white;
+        }
+        /* Markdown Preview Styles */
+        #html-preview h1 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; margin-top: 0; }
+        #html-preview h2 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
+        #html-preview code { background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-family: monospace; }
+        #html-preview pre { background: #f1f5f9; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        #html-preview blockquote { border-left: 4px solid #e2e8f0; padding-left: 1rem; color: #64748b; margin-left: 0; }
+        #html-preview img { max-width: 100%; }
+        #html-preview table { border-collapse: collapse; width: 100%; }
+        #html-preview th, #html-preview td { border: 1px solid #e2e8f0; padding: 0.5rem; }
+
+        .btn-copy {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .markdown-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            #markdown-input {
+                height: 300px;
+            }
+            #html-preview {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Editor Markdown Online</h1>
+            <p>Escreva em Markdown e visualize o resultado em HTML instantaneamente.</p>
+        </section>
+
+        <div class="markdown-container">
+            <div class="editor-pane">
+                <div class="pane-header">
+                    <span>Markdown</span>
+                    <button id="clear-btn" class="btn-copy" style="background: #ef4444;">Limpar</button>
+                </div>
+                <textarea id="markdown-input" placeholder="# Título&#10;&#10;Escreva seu texto aqui...&#10;&#10;- Lista item 1&#10;- Lista item 2&#10;&#10;**Negrito** e *Itálico*"></textarea>
+            </div>
+            <div class="preview-pane">
+                <div class="pane-header">
+                    <span>Visualização</span>
+                    <button id="copy-html" class="btn-copy">Copiar HTML</button>
+                </div>
+                <div id="html-preview"></div>
+            </div>
+        </div>
+
+        <section class="tool-info">
+            <h2>O que é Markdown?</h2>
+            <p>Markdown é uma linguagem de marcação leve com sintaxe de formatação de texto simples. É amplamente utilizada por programadores, escritores e em plataformas como GitHub e Reddit.</p>
+            <ul>
+                <li><strong>Produtividade:</strong> Formate textos sem tirar as mãos do teclado.</li>
+                <li><strong>Compatibilidade:</strong> Converta facilmente para HTML ou outros formatos.</li>
+                <li><strong>Simplicidade:</strong> Fácil de aprender e ler, mesmo no formato bruto.</li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <script>
+        const input = document.getElementById('markdown-input');
+        const preview = document.getElementById('html-preview');
+        const copyBtn = document.getElementById('copy-html');
+        const clearBtn = document.getElementById('clear-btn');
+
+        function updatePreview() {
+            const markdownText = input.value;
+            preview.innerHTML = marked.parse(markdownText);
+        }
+
+        input.addEventListener('input', updatePreview);
+
+        copyBtn.addEventListener('click', () => {
+            const html = preview.innerHTML;
+            navigator.clipboard.writeText(html).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copiado!';
+                setTimeout(() => copyBtn.textContent = originalText, 2000);
+            });
+        });
+
+        clearBtn.addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja limpar o editor?')) {
+                input.value = '';
+                updatePreview();
+            }
+        });
+
+        // Initial content
+        input.value = `# Bem-vindo ao Editor Markdown!
+
+Esta é uma ferramenta gratuita para você escrever e visualizar seu conteúdo em tempo real.
+
+## Funcionalidades:
+1. Suporte a **negrito** e *itálico*.
+2. Listas ordenadas e não ordenadas.
+3. Blocos de código: \`console.log("Olá Mundo")\`.
+4. Links e imagens.
+
+> "Markdown é o futuro da escrita para a web."
+
+Experimente apagar este texto e começar o seu!`;
+        updatePreview();
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

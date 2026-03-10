@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de QR Code - Ferramentas Rápidas</title>
+    <meta name="description" content="Gere códigos QR para links, textos ou contatos de forma instantânea e gratuita.">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                    <li><a href="../politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1>Gerador de QR Code</h1>
+                <p style="color: var(--text-muted);">Crie códigos QR reais e legíveis para links, textos ou contatos.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="qr-text">Texto ou URL:</label>
+                <input type="text" id="qr-text" placeholder="https://exemplo.com" oninput="generateQR()">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label for="qr-size">Tamanho (px):</label>
+                    <select id="qr-size" onchange="generateQR()">
+                        <option value="150">150x150</option>
+                        <option value="200" selected>200x200</option>
+                        <option value="300">300x300</option>
+                        <option value="400">400x400</option>
+                        <option value="500">500x500</option>
+                    </select>
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label for="qr-level">Nível de Correção:</label>
+                    <select id="qr-level" onchange="generateQR()">
+                        <option value="L">Baixo (7%)</option>
+                        <option value="M" selected>Médio (15%)</option>
+                        <option value="Q">Quartil (25%)</option>
+                        <option value="H">Alto (30%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label for="qr-foreground">Cor do QR:</label>
+                    <input type="color" id="qr-foreground" value="#000000" onchange="generateQR()" style="height: 45px; padding: 5px; cursor: pointer;">
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label for="qr-background">Cor de Fundo:</label>
+                    <input type="color" id="qr-background" value="#ffffff" onchange="generateQR()" style="height: 45px; padding: 5px; cursor: pointer;">
+                </div>
+            </div>
+
+            <div id="qr-result-container" class="results" style="text-align: center;">
+                <div id="qrcode-wrapper" style="display: inline-block; padding: 20px; background: white; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px;">
+                    <canvas id="qr-canvas"></canvas>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button class="btn" onclick="downloadQR()">Baixar PNG</button>
+                    <button class="btn btn-secondary" onclick="copyToClipboard()">Copiar Texto</button>
+                </div>
+                <p style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted);">O QR Code é gerado automaticamente enquanto você digita.</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script>
+        let qr;
+
+        function initQR() {
+            qr = new QRious({
+                element: document.getElementById('qr-canvas'),
+                size: 200,
+                value: 'https://ferramentasrapidas.com'
+            });
+            generateQR();
+        }
+
+        function generateQR() {
+            const text = document.getElementById('qr-text').value.trim() || 'https://ferramentasrapidas.com';
+            const size = parseInt(document.getElementById('qr-size').value);
+            const level = document.getElementById('qr-level').value;
+            const foreground = document.getElementById('qr-foreground').value;
+            const background = document.getElementById('qr-background').value;
+
+            qr.set({
+                value: text,
+                size: size,
+                level: level,
+                foreground: foreground,
+                background: background
+            });
+        }
+
+        function downloadQR() {
+            const canvas = document.getElementById('qr-canvas');
+            const link = document.createElement('a');
+            link.download = 'qrcode-ferramentas-rapidas.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('qr-text').value;
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Texto copiado para a área de transferência!');
+            });
+        }
+
+        // Initialize on load
+        window.onload = initQR;
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

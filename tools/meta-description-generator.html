@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Meta Description - Ferramentas Rápidas</title>
+    <meta name="description" content="Crie meta descriptions otimizadas para SEO usando modelos profissionais e persuasivos.">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                    <li><a href="../politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1>Gerador de Meta Description</h1>
+                <p style="color: var(--text-muted);">Crie descrições que atraem cliques nos resultados de busca.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="product">Nome do Produto/Serviço:</label>
+                <input type="text" id="product" placeholder="Ex: Curso de Culinária">
+            </div>
+
+            <div class="input-group">
+                <label for="benefit">Principal Benefício:</label>
+                <input type="text" id="benefit" placeholder="Ex: aprenda a cozinhar em 30 dias">
+            </div>
+
+            <button class="btn" onclick="generateMeta()" style="width: 100%; margin-bottom: 30px;">Gerar Opções</button>
+
+            <div id="meta-results" style="display: flex; flex-direction: column; gap: 15px;">
+                <!-- Resultados aparecerão aqui -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function generateMeta() {
+            const product = document.getElementById('product').value.trim();
+            const benefit = document.getElementById('benefit').value.trim();
+            const results = document.getElementById('meta-results');
+
+            if (!product || !benefit) {
+                alert('Preencha os campos!');
+                return;
+            }
+
+            const templates = [
+                `Descubra como o ${product} pode ajudar você. Com o nosso método, você ${benefit}. Clique e confira agora!`,
+                `Procurando por ${product}? Veja como ${benefit} de forma rápida e segura. Acesse nosso site e saiba mais.`,
+                `O melhor ${product} do mercado. Nossa solução permite que você ${benefit}. Entre em contato e peça seu orçamento.`,
+                `Quer saber como ${benefit}? Conheça o ${product}, a ferramenta ideal para quem busca resultados reais.`,
+                `Aprenda tudo sobre ${product}. Neste guia completo, mostramos como ${benefit}. Não perca tempo, acesse já!`
+            ];
+
+            results.innerHTML = '';
+            templates.forEach(t => {
+                const div = document.createElement('div');
+                div.className = 'results';
+                div.style.cursor = 'pointer';
+                div.style.transition = 'all 0.2s';
+                div.innerHTML = `<p style="margin-bottom: 10px;">${t}</p><small style="color: var(--text-muted); font-weight: 600;">Caracteres: ${t.length} (Ideal: 120-160)</small>`;
+                div.onmouseover = () => div.style.backgroundColor = '#e2e8f0';
+                div.onmouseout = () => div.style.backgroundColor = '#f1f5f9';
+                div.onclick = () => {
+                    navigator.clipboard.writeText(t);
+                    alert('Copiado!');
+                };
+                results.appendChild(div);
+            });
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

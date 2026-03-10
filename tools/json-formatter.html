@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatador e Validador de JSON - Ferramentas Rápidas</title>
+    <meta name="description" content="Formate, valide e embeleze seus arquivos JSON instantaneamente com nossa ferramenta online.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .json-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            height: 600px;
+        }
+        @media (max-width: 768px) {
+            .json-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+        .editor-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .editor-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        textarea {
+            width: 100%;
+            height: 100%;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            resize: none;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+        textarea:focus {
+            outline: 2px solid var(--primary-color);
+            border-color: transparent;
+        }
+        .actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+        .status-msg {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .status-success { color: #10b981; }
+        .status-error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Formatador de JSON</h1>
+            <p>Valide e organize seus dados JSON para facilitar a leitura e depuração.</p>
+        </section>
+
+        <div class="json-container">
+            <div class="editor-group">
+                <label>Entrada (JSON Bruto)</label>
+                <textarea id="jsonInput" placeholder='Cole seu JSON aqui... Ex: {"nome": "João", "idade": 30}'></textarea>
+            </div>
+            <div class="editor-group">
+                <label>
+                    Saída (Formatado)
+                    <span id="status" class="status-msg"></span>
+                </label>
+                <textarea id="jsonOutput" readonly placeholder="O resultado aparecerá aqui..."></textarea>
+            </div>
+            <div class="actions">
+                <button class="btn btn-primary" id="formatBtn">Formatar JSON</button>
+                <button class="btn btn-secondary" id="minifyBtn">Minificar</button>
+                <button class="btn btn-secondary" id="copyBtn">Copiar Resultado</button>
+                <button class="btn btn-secondary" id="clearBtn">Limpar</button>
+            </div>
+        </div>
+
+        <section class="tool-info">
+            <h2>O que é JSON?</h2>
+            <p>JSON (JavaScript Object Notation) é um formato leve de troca de dados, fácil de ler e escrever para humanos e fácil de interpretar para máquinas. É o padrão mais utilizado em APIs modernas.</p>
+        </section>
+    </main>
+
+    <script>
+        const input = document.getElementById('jsonInput');
+        const output = document.getElementById('jsonOutput');
+        const status = document.getElementById('status');
+        const formatBtn = document.getElementById('formatBtn');
+        const minifyBtn = document.getElementById('minifyBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+
+        function processJson(minify = false) {
+            const rawValue = input.value.trim();
+            if (!rawValue) {
+                status.textContent = "";
+                output.value = "";
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(rawValue);
+                output.value = JSON.stringify(parsed, null, minify ? 0 : 4);
+                status.textContent = "✓ JSON Válido";
+                status.className = "status-msg status-success";
+            } catch (e) {
+                status.textContent = "✗ Erro: " + e.message;
+                status.className = "status-msg status-error";
+                output.value = "";
+            }
+        }
+
+        formatBtn.addEventListener('click', () => processJson(false));
+        minifyBtn.addEventListener('click', () => processJson(true));
+        
+        copyBtn.addEventListener('click', () => {
+            if (output.value) {
+                navigator.clipboard.writeText(output.value).then(() => {
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = 'Copiado!';
+                    setTimeout(() => copyBtn.textContent = originalText, 2000);
+                });
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            input.value = "";
+            output.value = "";
+            status.textContent = "";
+        });
+
+        // Auto-format on paste
+        input.addEventListener('paste', () => {
+            setTimeout(() => processJson(false), 100);
+        });
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

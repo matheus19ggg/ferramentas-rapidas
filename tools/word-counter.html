@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Palavras - Ferramentas Rápidas</title>
+    <meta name="description" content="Conte o número de palavras, caracteres e parágrafos do seu texto de forma rápida e gratuita com total privacidade.">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                    <li><a href="../politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1>Contador de Palavras</h1>
+                <p style="color: var(--text-muted);">Analise seu texto e obtenha estatísticas detalhadas instantaneamente.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="text-input">Insira seu texto abaixo:</label>
+                <textarea id="text-input" rows="10" placeholder="Cole ou digite seu texto aqui..."></textarea>
+            </div>
+            
+            <div class="results">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                    <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                        <span id="word-count" style="display: block; font-size: 2rem; font-weight: 800; color: var(--primary);">0</span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Palavras</span>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                        <span id="char-count" style="display: block; font-size: 2rem; font-weight: 800; color: var(--primary);">0</span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Caracteres</span>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border);">
+                        <span id="paragraph-count" style="display: block; font-size: 2rem; font-weight: 800; color: var(--primary);">0</span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Parágrafos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const textarea = document.getElementById('text-input');
+        const wordCount = document.getElementById('word-count');
+        const charCount = document.getElementById('char-count');
+        const paragraphCount = document.getElementById('paragraph-count');
+
+        textarea.addEventListener('input', () => {
+            const text = textarea.value.trim();
+            
+            // Palavras
+            const words = text ? text.split(/\s+/).length : 0;
+            wordCount.textContent = words;
+
+            // Caracteres
+            charCount.textContent = textarea.value.length;
+
+            // Parágrafos
+            const paragraphs = text ? text.split(/\n\s*\n/).filter(p => p.trim() !== '').length : 0;
+            paragraphCount.textContent = paragraphs;
+        });
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

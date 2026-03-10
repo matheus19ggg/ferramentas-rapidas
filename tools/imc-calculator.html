@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de IMC e Peso Ideal - Ferramentas Rápidas</title>
+    <meta name="description" content="Calcule seu Índice de Massa Corporal (IMC) e descubra seu peso ideal de forma rápida e gratuita.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Calculadora de IMC e Peso Ideal</h1>
+            <p>Descubra se você está no seu peso ideal calculando o seu IMC (Índice de Massa Corporal).</p>
+        </section>
+
+        <div class="tool-container">
+            <div class="input-group">
+                <label for="height">Altura (cm):</label>
+                <input type="number" id="height" placeholder="Ex: 175" min="50" max="250">
+            </div>
+            <div class="input-group">
+                <label for="weight">Peso (kg):</label>
+                <input type="number" id="weight" placeholder="Ex: 70" min="10" max="500">
+            </div>
+            <div class="input-group">
+                <label for="gender">Gênero:</label>
+                <select id="gender">
+                    <option value="male">Masculino</option>
+                    <option value="female">Feminino</option>
+                </select>
+            </div>
+            <button id="calculateBtn" class="btn-primary">Calcular IMC</button>
+
+            <div id="resultArea" class="result-container" style="display: none; margin-top: 2rem;">
+                <h3>Seu Resultado:</h3>
+                <div class="result-box" id="imcValue" style="font-size: 2rem; font-weight: 800; color: var(--primary-color);"></div>
+                <p id="imcStatus" style="font-weight: 600; margin-bottom: 1rem;"></p>
+                <div id="idealWeightRange" style="padding: 1rem; background: #f8fafc; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                    <strong>Peso Ideal Estimado:</strong> <span id="idealWeightText"></span>
+                </div>
+            </div>
+        </div>
+
+        <section class="tool-info" style="margin-top: 3rem;">
+            <h2>O que é o IMC?</h2>
+            <p>O Índice de Massa Corporal (IMC) é um cálculo simples que permite avaliar se uma pessoa está dentro do peso ideal em relação à sua altura. É a medida padrão utilizada pela Organização Mundial da Saúde (OMS).</p>
+            <h3>Como interpretamos o resultado?</h3>
+            <ul>
+                <li><strong>Abaixo de 18.5:</strong> Abaixo do peso</li>
+                <li><strong>18.5 a 24.9:</strong> Peso normal</li>
+                <li><strong>25.0 a 29.9:</strong> Sobrepeso</li>
+                <li><strong>30.0 a 34.9:</strong> Obesidade Grau I</li>
+                <li><strong>35.0 a 39.9:</strong> Obesidade Grau II</li>
+                <li><strong>Acima de 40.0:</strong> Obesidade Grau III</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const heightInput = document.getElementById('height');
+        const weightInput = document.getElementById('weight');
+        const genderSelect = document.getElementById('gender');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultArea = document.getElementById('resultArea');
+        const imcValueDisplay = document.getElementById('imcValue');
+        const imcStatusDisplay = document.getElementById('imcStatus');
+        const idealWeightText = document.getElementById('idealWeightText');
+
+        calculateBtn.addEventListener('click', () => {
+            const height = parseFloat(heightInput.value) / 100; // converter para metros
+            const weight = parseFloat(weightInput.value);
+            const gender = genderSelect.value;
+
+            if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
+                alert('Por favor, insira valores válidos para altura e peso.');
+                return;
+            }
+
+            const imc = weight / (height * height);
+            imcValueDisplay.textContent = imc.toFixed(1);
+
+            let status = '';
+            let color = '#10b981'; // green
+
+            if (imc < 18.5) {
+                status = 'Abaixo do peso';
+                color = '#f59e0b'; // orange
+            } else if (imc < 25) {
+                status = 'Peso normal';
+                color = '#10b981'; // green
+            } else if (imc < 30) {
+                status = 'Sobrepeso';
+                color = '#f59e0b'; // orange
+            } else if (imc < 35) {
+                status = 'Obesidade Grau I';
+                color = '#ef4444'; // red
+            } else if (imc < 40) {
+                status = 'Obesidade Grau II';
+                color = '#ef4444'; // red
+            } else {
+                status = 'Obesidade Grau III';
+                color = '#b91c1c'; // dark red
+            }
+
+            imcStatusDisplay.textContent = status;
+            imcStatusDisplay.style.color = color;
+            imcValueDisplay.style.color = color;
+
+            // Cálculo de Peso Ideal (Fórmula de Devine simplificada ou faixa de IMC 18.5-24.9)
+            const minIdeal = 18.5 * (height * height);
+            const maxIdeal = 24.9 * (height * height);
+            idealWeightText.textContent = `${minIdeal.toFixed(1)}kg - ${maxIdeal.toFixed(1)}kg`;
+
+            resultArea.style.display = 'block';
+            resultArea.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

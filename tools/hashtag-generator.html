@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Hashtags - Ferramentas Rápidas</title>
+    <meta name="description" content="Gere hashtags relevantes para suas postagens no Instagram, Twitter e TikTok a partir de uma palavra-chave.">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                    <li><a href="../politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1>Gerador de Hashtags</h1>
+                <p style="color: var(--text-muted);">Aumente o alcance das suas postagens com as melhores tags.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="keyword">Palavra-chave:</label>
+                <input type="text" id="keyword" placeholder="Ex: marketing, viagem, comida...">
+            </div>
+
+            <button class="btn" onclick="generateHashtags()" style="width: 100%; margin-bottom: 30px;">Gerar Hashtags</button>
+
+            <div class="results">
+                <label>Hashtags Sugeridas:</label>
+                <textarea id="hashtag-result" rows="6" readonly placeholder="As hashtags aparecerão aqui..."></textarea>
+                <button class="btn btn-secondary" style="margin-top: 15px; width: 100%;" onclick="copy()">Copiar Tudo</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const variations = ['Brasil', 'Life', 'Style', 'Love', 'Tips', 'Daily', 'Otd', 'Vibes', 'World', 'Photography', 'Art', 'Design', 'Business', 'Success', 'Goals', 'Inspiration', 'Creative', 'Modern', 'Digital', 'Online'];
+
+        function generateHashtags() {
+            const keyword = document.getElementById('keyword').value.trim().replace(/\s+/g, '');
+            if (!keyword) {
+                alert('Digite uma palavra-chave!');
+                return;
+            }
+
+            const result = [];
+            result.push('#' + keyword);
+            
+            const shuffled = variations.sort(() => 0.5 - Math.random());
+            for (let i = 0; i < 15; i++) {
+                result.push('#' + keyword + shuffled[i]);
+            }
+
+            document.getElementById('hashtag-result').value = result.join(' ');
+        }
+
+        function copy() {
+            const el = document.getElementById('hashtag-result');
+            el.select();
+            document.execCommand('copy');
+            alert('Hashtags copiadas!');
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

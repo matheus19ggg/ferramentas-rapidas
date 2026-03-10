@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Apelidos - Ferramentas Rápidas</title>
+    <meta name="description" content="Crie apelidos criativos e variações divertidas a partir do seu nome. Ideal para jogos, redes sociais e perfis online.">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                    <li><a href="../politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1>Gerador de Apelidos</h1>
+                <p style="color: var(--text-muted);">Digite seu nome e veja variações criativas e divertidas para usar onde quiser.</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="name-input">Seu Nome:</label>
+                <input type="text" id="name-input" placeholder="Ex: Matheus, Maria, João...">
+            </div>
+
+            <button class="btn" onclick="generateNicknames()" style="width: 100%; margin-bottom: 30px;">Gerar Apelidos</button>
+
+            <div id="nicknames-list" class="results" style="display: none; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                <!-- Apelidos aparecerão aqui -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function generateNicknames() {
+            const name = document.getElementById('name-input').value.trim();
+            if (!name) {
+                alert('Por favor, digite um nome!');
+                return;
+            }
+
+            const list = document.getElementById('nicknames-list');
+            list.innerHTML = '';
+            list.style.display = 'grid';
+
+            const variations = [];
+            const lower = name.toLowerCase();
+            const firstHalf = lower.substring(0, Math.ceil(lower.length / 2));
+            const secondHalf = lower.substring(Math.ceil(lower.length / 2));
+
+            // Variações comuns
+            variations.push(name + 'zin');
+            variations.push(name + 'zinho');
+            variations.push(name + 'zão');
+            variations.push(name + 'ito');
+            variations.push(name + 'x');
+            variations.push(name + 'y');
+            variations.push(name + 'z');
+            variations.push(firstHalf + 'z');
+            variations.push(secondHalf);
+            variations.push(lower.split('').reverse().join(''));
+            variations.push(name.charAt(0) + ' ' + name);
+            variations.push(name + ' Gamer');
+            variations.push(name + ' Pro');
+            variations.push(name + ' 01');
+            variations.push(name + ' Master');
+            variations.push('The ' + name);
+
+            variations.forEach(v => {
+                const div = document.createElement('div');
+                div.className = 'btn btn-secondary';
+                div.style.fontSize = '0.9rem';
+                div.style.padding = '10px';
+                div.textContent = v;
+                div.onclick = () => {
+                    navigator.clipboard.writeText(v);
+                    alert(`Apelido "${v}" copiado!`);
+                };
+                list.appendChild(div);
+            });
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

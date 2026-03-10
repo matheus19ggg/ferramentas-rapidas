@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - Ferramentas Rápidas</title>
+    <meta name="description" content="Entre em contato com a equipe do Ferramentas Rápidas para sugestões, feedback ou dúvidas sobre nossas ferramentas online.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="sobre.html">Sobre</a></li>
+                    <li><a href="contato.html">Contato</a></li>
+                    <li><a href="politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container">
+            <h1>Fale Conosco</h1>
+            <p style="margin-bottom: 30px;">Tem uma sugestão de nova ferramenta? Encontrou um bug? Ou apenas quer dizer oi? Adoraríamos ouvir você!</p>
+            
+            <form id="contact-form" onsubmit="handleSubmit(event)">
+                <div class="input-group">
+                    <label for="name">Seu Nome:</label>
+                    <input type="text" id="name" required placeholder="Digite seu nome completo">
+                </div>
+                <div class="input-group">
+                    <label for="email">Seu E-mail:</label>
+                    <input type="text" id="email" required placeholder="Digite seu melhor e-mail">
+                </div>
+                <div class="input-group">
+                    <label for="message">Sua Mensagem:</label>
+                    <textarea id="message" rows="6" required placeholder="Como podemos ajudar?"></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Enviar Mensagem</button>
+            </form>
+
+            <div id="success-msg" class="results" style="display: none; text-align: center; background-color: #dcfce7; color: #166534;">
+                <p><strong>Mensagem enviada com sucesso!</strong></p>
+                <p>Obrigado pelo seu contato. Responderemos o mais breve possível.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function handleSubmit(e) {
+            e.preventDefault();
+            document.getElementById('contact-form').style.display = 'none';
+            document.getElementById('success-msg').style.display = 'block';
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>FerramentasRápidas</h3>
+                    <p>Sua caixa de ferramentas online definitiva. Simples, rápida e focada em privacidade.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Navegação</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="sobre.html">Sobre Nós</a></li>
+                        <li><a href="contato.html">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="politica-de-privacidade.html">Privacidade</a></li>
+                        <li><a href="#">Termos de Uso</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

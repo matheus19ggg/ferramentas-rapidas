@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Nomes - Ferramentas Rápidas</title>
+    <meta name="description" content="Gere nomes criativos para sua empresa, startup ou projeto combinando palavras aleatórias.">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                    <li><a href="../politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1>Gerador de Nomes Criativos</h1>
+                <p style="color: var(--text-muted);">Encontre o nome perfeito para sua próxima grande ideia.</p>
+            </div>
+            
+            <button class="btn" onclick="generateNames()" style="width: 100%; margin-bottom: 30px;">Gerar Sugestões</button>
+
+            <div id="names-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                <!-- Nomes aparecerão aqui -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const prefixes = ['Nova', 'Tech', 'Smart', 'Global', 'Prime', 'Eco', 'Fast', 'Zen', 'Blue', 'Sky', 'Mega', 'Vibe', 'Omni', 'Core', 'Flow', 'Peak', 'Swift', 'Bright', 'Solid', 'Pure'];
+        const suffixes = ['Systems', 'Solutions', 'Hub', 'Lab', 'Net', 'Way', 'Box', 'Point', 'Link', 'Zone', 'Space', 'Mind', 'Pulse', 'Edge', 'Cloud', 'Grid', 'Forge', 'Base', 'Wave', 'Path'];
+
+        function generateNames() {
+            const list = document.getElementById('names-list');
+            list.innerHTML = '';
+            
+            for (let i = 0; i < 12; i++) {
+                const p = prefixes[Math.floor(Math.random() * prefixes.length)];
+                const s = suffixes[Math.floor(Math.random() * suffixes.length)];
+                const name = p + s;
+                
+                const div = document.createElement('div');
+                div.style.background = 'white';
+                div.style.padding = '20px';
+                div.style.borderRadius = '12px';
+                div.style.textAlign = 'center';
+                div.style.border = '1px solid var(--border)';
+                div.style.cursor = 'pointer';
+                div.style.transition = 'all 0.2s';
+                div.innerHTML = `<span style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">${name}</span>`;
+                div.onmouseover = () => div.style.borderColor = 'var(--primary)';
+                div.onmouseout = () => div.style.borderColor = 'var(--border)';
+                div.onclick = () => {
+                    navigator.clipboard.writeText(name);
+                    alert(`Nome "${name}" copiado!`);
+                };
+                list.appendChild(div);
+            }
+        }
+
+        generateNames();
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

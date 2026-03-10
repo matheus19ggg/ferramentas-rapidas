@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Paleta de Cores - Ferramentas Rápidas</title>
+    <meta name="description" content="Gere paletas de cores harmônicas para seus projetos de design e web. Encontre a combinação perfeita com um clique.">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                    <li><a href="../politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1>Gerador de Paleta de Cores</h1>
+                <p style="color: var(--text-muted);">Gere combinações de cores harmônicas para seus designs. Clique na cor para copiar o código HEX.</p>
+            </div>
+            
+            <button class="btn" onclick="generatePalette()" style="width: 100%; margin-bottom: 30px;">Gerar Nova Paleta</button>
+
+            <div id="palette-container" class="palette-grid">
+                <!-- Cores aparecerão aqui -->
+            </div>
+
+            <div class="results" style="margin-top: 40px; text-align: center;">
+                <p><strong>Dica:</strong> Pressione a barra de espaço para gerar uma nova paleta!</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function generateRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function generatePalette() {
+            const container = document.getElementById('palette-container');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 5; i++) {
+                const color = generateRandomColor();
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.backgroundColor = color;
+                swatch.innerHTML = `<span>${color}</span>`;
+                swatch.onclick = () => {
+                    navigator.clipboard.writeText(color);
+                    alert(`Cor ${color} copiada!`);
+                };
+                container.appendChild(swatch);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                generatePalette();
+            }
+        });
+
+        generatePalette();
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

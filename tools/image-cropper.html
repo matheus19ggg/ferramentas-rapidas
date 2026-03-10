@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cortador de Imagem Online - Recortar Fotos Grátis - Ferramentas Rápidas</title>
+    <meta name="description" content="Recorte suas imagens e fotos online de forma fácil e rápida. Escolha a proporção ideal e baixe a imagem cortada em segundos.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <style>
+        .cropper-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .upload-area {
+            border: 2px dashed #e2e8f0;
+            padding: 3rem;
+            text-align: center;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .upload-area:hover {
+            border-color: var(--primary-color);
+        }
+        .upload-area input {
+            display: none;
+        }
+        .cropper-wrapper {
+            max-height: 500px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+        }
+        #image-to-crop {
+            max-width: 100%;
+            display: block;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn-action {
+            padding: 0.75rem 1rem;
+            border: 1px solid #f0e2e2;
+            background: white;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .btn-action.active {
+            background: var(--primary-color);
+            color: rgb(237, 10, 10);
+            border-color: var(--primary-color);
+        }
+        .btn-download {
+            background: var(--primary-color);
+            color: rgb(239, 7, 7);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+        .btn-download:hover {
+            opacity: 0.9;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Cortador de Imagem Online</h1>
+            <p>Recorte suas fotos com precisão e facilidade, diretamente no seu navegador.</p>
+        </section>
+
+        <div class="cropper-container">
+            <div id="upload-section" class="upload-area">
+                <label for="image-upload">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem; color: var(--primary-color);"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    <p>Clique para selecionar ou arraste uma imagem aqui</p>
+                    <input type="file" id="image-upload" accept="image/*">
+                </label>
+            </div>
+
+            <div id="editor-section" class="hidden">
+                <div class="cropper-wrapper">
+                    <img id="image-to-crop" src="">
+                </div>
+                
+                <div class="controls">
+                    <button class="btn-action active" data-ratio="NaN">Livre</button>
+                    <button class="btn-action" data-ratio="1">1:1 (Quadrado)</button>
+                    <button class="btn-action" data-ratio="1.7777777777777777">16:9 (Widescreen)</button>
+                    <button class="btn-action" data-ratio="0.6666666666666666">2:3 (Retrato)</button>
+                    <button class="btn-action" data-ratio="1.3333333333333333">4:3 (Padrão)</button>
+                </div>
+
+                <div class="controls">
+                    <button id="rotate-left" class="btn-action">Girar Esquerda</button>
+                    <button id="rotate-right" class="btn-action">Girar Direita</button>
+                    <button id="reset" class="btn-action" style="color: #ef4444;">Resetar</button>
+                </div>
+
+                <button id="download-crop" class="btn-download">Cortar e Baixar Imagem</button>
+                <button id="new-image" class="btn-action" style="width: 100%; margin-top: 1rem; border: none; background: #f1f5f9;">Escolher Outra Imagem</button>
+            </div>
+        </div>
+
+        <section class="tool-info">
+            <h2>Por que usar nosso cortador de imagem?</h2>
+            <p>Precisa de uma imagem em um formato específico para redes sociais ou para o seu site? Nossa ferramenta permite que você faça isso sem complicações.</p>
+            <ul>
+                <li><strong>Privacidade:</strong> Suas fotos são processadas localmente e nunca enviadas para nossos servidores.</li>
+                <li><strong>Proporções Prontas:</strong> Use formatos pré-definidos para Instagram, YouTube e mais.</li>
+                <li><strong>Qualidade:</strong> Mantemos a melhor qualidade possível após o recorte.</li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script>
+        let cropper;
+        const imageUpload = document.getElementById('image-upload');
+        const imageToCrop = document.getElementById('image-to-crop');
+        const uploadSection = document.getElementById('upload-section');
+        const editorSection = document.getElementById('editor-section');
+
+        imageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imageToCrop.onload = function() {
+                        initCropper();
+                        imageToCrop.onload = null;
+                    };
+                    imageToCrop.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function initCropper() {
+            uploadSection.classList.add('hidden');
+            editorSection.classList.remove('hidden');
+
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            try {
+                cropper = new Cropper(imageToCrop, {
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.8,
+                    restore: false,
+                    guides: true,
+                    center: true,
+                    highlight: false,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false,
+                });
+            } catch (error) {
+                console.error('Erro ao inicializar o Cropper:', error);
+                alert('Erro ao carregar o editor de imagem. Tente novamente com outra foto.');
+            }
+        }
+
+        // Aspect Ratio buttons
+        document.querySelectorAll('[data-ratio]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!cropper) return;
+                const ratio = parseFloat(this.getAttribute('data-ratio'));
+                cropper.setAspectRatio(ratio);
+                
+                document.querySelectorAll('[data-ratio]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Rotation
+        document.getElementById('rotate-left').addEventListener('click', () => {
+            if (cropper) cropper.rotate(-90);
+        });
+        document.getElementById('rotate-right').addEventListener('click', () => {
+            if (cropper) cropper.rotate(90);
+        });
+        document.getElementById('reset').addEventListener('click', () => {
+            if (cropper) cropper.reset();
+        });
+
+        // Download
+        document.getElementById('download-crop').addEventListener('click', function() {
+            if (!cropper) return;
+            try {
+                const canvas = cropper.getCroppedCanvas();
+                if (!canvas) {
+                    alert('Não foi possível gerar o recorte. Tente ajustar a área de corte.');
+                    return;
+                }
+                const link = document.createElement('a');
+                link.download = 'imagem_cortada.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (error) {
+                console.error('Erro ao baixar imagem:', error);
+                alert('Ocorreu um erro ao processar o download da imagem.');
+            }
+        });
+
+        document.getElementById('new-image').addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Drag and drop
+        uploadSection.addEventListener('dragover', e => {
+            e.preventDefault();
+            uploadSection.style.borderColor = 'var(--primary-color)';
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.style.borderColor = '#e2e8f0';
+        });
+
+        uploadSection.addEventListener('drop', e => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imageToCrop.onload = function() {
+                        initCropper();
+                        imageToCrop.onload = null;
+                    };
+                    imageToCrop.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

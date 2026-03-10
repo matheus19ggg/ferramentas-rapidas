@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronômetro e Temporizador - Ferramentas Rápidas</title>
+    <meta name="description" content="Cronômetro online e temporizador regressivo simples e fácil de usar.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 800;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--primary-color);
+            background: #f1f5f9;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+        }
+        .timer-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        .timer-inputs {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .timer-inputs input {
+            width: 60px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Cronômetro e Temporizador</h1>
+            <p>Monitore o tempo com precisão usando nossas ferramentas de cronometragem.</p>
+        </section>
+
+        <div class="tool-container">
+            <div class="tabs">
+                <div class="tab active" id="stopwatchTab">Cronômetro</div>
+                <div class="tab" id="timerTab">Temporizador</div>
+            </div>
+
+            <div id="stopwatchSection">
+                <div class="timer-display" id="stopwatchDisplay">00:00:00.00</div>
+                <div class="timer-controls">
+                    <button id="startStopwatch" class="btn-primary">Iniciar</button>
+                    <button id="resetStopwatch" class="btn-secondary">Zerar</button>
+                </div>
+            </div>
+
+            <div id="timerSection" style="display: none;">
+                <div class="timer-inputs">
+                    <input type="number" id="timerHours" placeholder="HH" min="0" max="99" value="0"> :
+                    <input type="number" id="timerMinutes" placeholder="MM" min="0" max="59" value="5"> :
+                    <input type="number" id="timerSeconds" placeholder="SS" min="0" max="59" value="0">
+                </div>
+                <div class="timer-display" id="timerDisplay">00:05:00</div>
+                <div class="timer-controls">
+                    <button id="startTimer" class="btn-primary">Iniciar</button>
+                    <button id="resetTimer" class="btn-secondary">Zerar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tabs logic
+        const stopwatchTab = document.getElementById('stopwatchTab');
+        const timerTab = document.getElementById('timerTab');
+        const stopwatchSection = document.getElementById('stopwatchSection');
+        const timerSection = document.getElementById('timerSection');
+
+        stopwatchTab.addEventListener('click', () => {
+            stopwatchTab.classList.add('active');
+            timerTab.classList.remove('active');
+            stopwatchSection.style.display = 'block';
+            timerSection.style.display = 'none';
+        });
+
+        timerTab.addEventListener('click', () => {
+            timerTab.classList.add('active');
+            stopwatchTab.classList.remove('active');
+            timerSection.style.display = 'block';
+            stopwatchSection.style.display = 'none';
+        });
+
+        // Stopwatch logic
+        let stopwatchInterval;
+        let stopwatchStartTime;
+        let stopwatchElapsedTime = 0;
+        let stopwatchRunning = false;
+
+        const stopwatchDisplay = document.getElementById('stopwatchDisplay');
+        const startStopwatchBtn = document.getElementById('startStopwatch');
+        const resetStopwatchBtn = document.getElementById('resetStopwatch');
+
+        function updateStopwatch() {
+            const now = Date.now();
+            const diff = now - stopwatchStartTime + stopwatchElapsedTime;
+            
+            const ms = Math.floor((diff % 1000) / 10);
+            const s = Math.floor((diff / 1000) % 60);
+            const m = Math.floor((diff / (1000 * 60)) % 60);
+            const h = Math.floor(diff / (1000 * 60 * 60));
+
+            stopwatchDisplay.textContent = 
+                `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${ms.toString().padStart(2, '0')}`;
+        }
+
+        startStopwatchBtn.addEventListener('click', () => {
+            if (stopwatchRunning) {
+                clearInterval(stopwatchInterval);
+                stopwatchElapsedTime += Date.now() - stopwatchStartTime;
+                startStopwatchBtn.textContent = 'Retomar';
+                stopwatchRunning = false;
+            } else {
+                stopwatchStartTime = Date.now();
+                stopwatchInterval = setInterval(updateStopwatch, 10);
+                startStopwatchBtn.textContent = 'Pausar';
+                stopwatchRunning = true;
+            }
+        });
+
+        resetStopwatchBtn.addEventListener('click', () => {
+            clearInterval(stopwatchInterval);
+            stopwatchElapsedTime = 0;
+            stopwatchRunning = false;
+            stopwatchDisplay.textContent = '00:00:00.00';
+            startStopwatchBtn.textContent = 'Iniciar';
+        });
+
+        // Timer logic
+        let timerInterval;
+        let timerEndTime;
+        let timerRemainingTime = 0;
+        let timerRunning = false;
+
+        const timerDisplay = document.getElementById('timerDisplay');
+        const startTimerBtn = document.getElementById('startTimer');
+        const resetTimerBtn = document.getElementById('resetTimer');
+        const hInput = document.getElementById('timerHours');
+        const mInput = document.getElementById('timerMinutes');
+        const sInput = document.getElementById('timerSeconds');
+
+        function updateTimer() {
+            const now = Date.now();
+            const diff = timerEndTime - now;
+
+            if (diff <= 0) {
+                clearInterval(timerInterval);
+                timerDisplay.textContent = '00:00:00';
+                timerRunning = false;
+                startTimerBtn.textContent = 'Iniciar';
+                alert('O tempo acabou!');
+                return;
+            }
+
+            const s = Math.floor((diff / 1000) % 60);
+            const m = Math.floor((diff / (1000 * 60)) % 60);
+            const h = Math.floor(diff / (1000 * 60 * 60));
+
+            timerDisplay.textContent = 
+                `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        startTimerBtn.addEventListener('click', () => {
+            if (timerRunning) {
+                clearInterval(timerInterval);
+                timerRemainingTime = timerEndTime - Date.now();
+                startTimerBtn.textContent = 'Retomar';
+                timerRunning = false;
+            } else {
+                if (timerRemainingTime > 0) {
+                    timerEndTime = Date.now() + timerRemainingTime;
+                } else {
+                    const h = parseInt(hInput.value) || 0;
+                    const m = parseInt(mInput.value) || 0;
+                    const s = parseInt(sInput.value) || 0;
+                    const totalMs = (h * 3600 + m * 60 + s) * 1000;
+                    
+                    if (totalMs <= 0) {
+                        alert('Por favor, defina um tempo válido.');
+                        return;
+                    }
+                    timerEndTime = Date.now() + totalMs;
+                }
+                timerInterval = setInterval(updateTimer, 100);
+                startTimerBtn.textContent = 'Pausar';
+                timerRunning = true;
+            }
+        });
+
+        resetTimerBtn.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            timerRemainingTime = 0;
+            timerRunning = false;
+            startTimerBtn.textContent = 'Iniciar';
+            const h = parseInt(hInput.value) || 0;
+            const m = parseInt(mInput.value) || 0;
+            const s = parseInt(sInput.value) || 0;
+            timerDisplay.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        });
+
+        // Sync inputs with display when changed
+        [hInput, mInput, sInput].forEach(input => {
+            input.addEventListener('input', () => {
+                if (!timerRunning) {
+                    const h = parseInt(hInput.value) || 0;
+                    const m = parseInt(mInput.value) || 0;
+                    const s = parseInt(sInput.value) || 0;
+                    timerDisplay.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                    timerRemainingTime = 0;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

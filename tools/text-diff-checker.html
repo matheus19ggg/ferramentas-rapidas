@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador de Texto - Ferramentas Rápidas</title>
+    <meta name="description" content="Compare dois textos e identifique as diferenças de forma visual e rápida.">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .diff-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .diff-result {
+            margin-top: 30px;
+            white-space: pre-wrap;
+            border: 2px solid var(--border);
+            padding: 25px;
+            border-radius: var(--radius);
+            background: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.8;
+        }
+        .added { background-color: #dcfce7; text-decoration: none; color: #166534; padding: 2px 4px; border-radius: 4px; font-weight: 600; }
+        .removed { background-color: #fee2e2; text-decoration: line-through; color: #991b1b; padding: 2px 4px; border-radius: 4px; font-weight: 600; }
+        
+        @media (max-width: 768px) {
+            .diff-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                    <li><a href="../sobre.html">Sobre</a></li>
+                    <li><a href="../contato.html">Contato</a></li>
+                    <li><a href="../politica-de-privacidade.html">Privacidade</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tool-container" style="max-width: 1000px;">
+            <div class="tool-header">
+                <h1>Comparador de Texto</h1>
+                <p style="color: var(--text-muted);">Identifique alterações, adições e remoções entre duas versões de um texto.</p>
+            </div>
+            
+            <div class="diff-container">
+                <div class="input-group">
+                    <label>Texto Original:</label>
+                    <textarea id="text1" rows="10" placeholder="Insira a versão original..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Texto Modificado:</label>
+                    <textarea id="text2" rows="10" placeholder="Insira a versão alterada..."></textarea>
+                </div>
+            </div>
+
+            <button class="btn" onclick="compare()" style="width: 100%;">Comparar Agora</button>
+
+            <div id="result" class="diff-result" style="display: none;"></div>
+        </div>
+    </main>
+
+    <script>
+        function compare() {
+            const t1 = document.getElementById('text1').value;
+            const t2 = document.getElementById('text2').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!t1 && !t2) {
+                alert('Insira os textos para comparar!');
+                return;
+            }
+
+            const words1 = t1.split(/(\s+)/);
+            const words2 = t2.split(/(\s+)/);
+            
+            let output = '';
+            const maxLen = Math.max(words1.length, words2.length);
+            
+            for (let i = 0; i < maxLen; i++) {
+                const w1 = words1[i] || '';
+                const w2 = words2[i] || '';
+                
+                if (w1 === w2) {
+                    output += w1;
+                } else {
+                    if (w1) output += `<span class="removed">${w1}</span>`;
+                    if (w2) output += `<span class="added">${w2}</span>`;
+                }
+            }
+
+            resultDiv.innerHTML = output;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

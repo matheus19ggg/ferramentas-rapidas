@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Gradiente CSS - Ferramentas Rápidas</title>
+    <meta name="description" content="Crie gradientes CSS incríveis visualmente e copie o código pronto para seu site.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .gradient-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        @media (max-width: 768px) {
+            .gradient-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        .preview-box {
+            width: 100%;
+            height: 300px;
+            border-radius: 0.75rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-size: 1.25rem;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .control-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .color-inputs {
+            display: flex;
+            gap: 1rem;
+        }
+        input[type="color"] {
+            width: 100%;
+            height: 45px;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            background: none;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .code-output {
+            grid-column: 1 / -1;
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            position: relative;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+        .copy-btn:hover {
+            opacity: 0.9;
+        }
+        select {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Gerador de Gradiente CSS</h1>
+            <p>Crie fundos modernos e vibrantes para seus sites e aplicativos.</p>
+        </section>
+
+        <div class="gradient-container">
+            <div id="preview" class="preview-box">
+                Visualização do Gradiente
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label>Cores</label>
+                    <div class="color-inputs">
+                        <input type="color" id="color1" value="#4f46e5">
+                        <input type="color" id="color2" value="#06b6d4">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Tipo</label>
+                    <select id="type">
+                        <option value="linear">Linear</option>
+                        <option value="radial">Radial</option>
+                    </select>
+                </div>
+
+                <div class="control-group" id="angle-group">
+                    <label>Ângulo: <span id="angle-val">90</span>°</label>
+                    <input type="range" id="angle" min="0" max="360" value="90">
+                </div>
+            </div>
+
+            <div class="code-output">
+                <button class="copy-btn" id="copyBtn">Copiar Código</button>
+                <code id="cssCode">background: linear-gradient(90deg, #4f46e5, #06b6d4);</code>
+            </div>
+        </div>
+
+        <section class="tool-info">
+            <h2>Por que usar gradientes?</h2>
+            <p>Gradientes adicionam profundidade e modernidade ao design. Eles são amplamente utilizados em botões, cabeçalhos e fundos de seções para criar um visual mais dinâmico do que cores sólidas.</p>
+        </section>
+    </main>
+
+    <script>
+        const color1 = document.getElementById('color1');
+        const color2 = document.getElementById('color2');
+        const type = document.getElementById('type');
+        const angle = document.getElementById('angle');
+        const angleVal = document.getElementById('angle-val');
+        const preview = document.getElementById('preview');
+        const cssCode = document.getElementById('cssCode');
+        const copyBtn = document.getElementById('copyBtn');
+        const angleGroup = document.getElementById('angle-group');
+
+        function updateGradient() {
+            let gradientStr = "";
+            if (type.value === 'linear') {
+                angleGroup.style.display = 'flex';
+                gradientStr = `linear-gradient(${angle.value}deg, ${color1.value}, ${color2.value})`;
+            } else {
+                angleGroup.style.display = 'none';
+                gradientStr = `radial-gradient(circle, ${color1.value}, ${color2.value})`;
+            }
+
+            preview.style.background = gradientStr;
+            cssCode.textContent = `background: ${gradientStr};`;
+            angleVal.textContent = angle.value;
+        }
+
+        [color1, color2, type, angle].forEach(el => {
+            el.addEventListener('input', updateGradient);
+        });
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(cssCode.textContent).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copiado!';
+                setTimeout(() => copyBtn.textContent = originalText, 2000);
+            });
+        });
+
+        updateGradient();
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

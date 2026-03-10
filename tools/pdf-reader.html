@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leitor de PDF Online - Visualizador Gratuito - Ferramentas Rápidas</title>
+    <meta name="description" content="Abra e visualize seus arquivos PDF diretamente no navegador de forma rápida e segura, sem precisar instalar nada.">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .pdf-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .upload-area {
+            border: 2px dashed #e2e8f0;
+            padding: 3rem;
+            text-align: center;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .upload-area:hover {
+            border-color: var(--primary-color);
+        }
+        .upload-area input {
+            display: none;
+        }
+        .pdf-viewer-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .btn-control {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-control:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+        #pdf-canvas {
+            width: 100%;
+            height: auto;
+            border: 1px solid #e2e8f0;
+            display: block;
+            margin: 0 auto;
+        }
+        .page-info {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Ferramentas<span>Rápidas</span></a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#ferramentas">Ferramentas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="tool-header">
+            <h1>Leitor de PDF Online</h1>
+            <p>Visualize seus documentos PDF instantaneamente no navegador com total privacidade.</p>
+        </section>
+
+        <div class="pdf-container">
+            <div id="upload-section" class="upload-area">
+                <label for="pdf-upload">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem; color: var(--primary-color);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <p>Clique para selecionar ou arraste um arquivo PDF aqui</p>
+                    <input type="file" id="pdf-upload" accept="application/pdf">
+                </label>
+            </div>
+
+            <div id="viewer-section" class="hidden">
+                <div class="pdf-viewer-controls">
+                    <button id="prev-page" class="btn-control">Anterior</button>
+                    <span class="page-info">Página <span id="page-num"></span> de <span id="page-count"></span></span>
+                    <button id="next-page" class="btn-control">Próxima</button>
+                    <button id="new-file" class="btn-control" style="background: #ef4444;">Novo Arquivo</button>
+                </div>
+                <canvas id="pdf-canvas"></canvas>
+            </div>
+        </div>
+
+        <section class="tool-info">
+            <h2>Por que usar nosso leitor de PDF?</h2>
+            <p>Muitas vezes você só precisa dar uma olhada rápida em um arquivo PDF e não quer abrir softwares pesados ou fazer upload para servidores desconhecidos. Nosso leitor funciona 100% no seu navegador, o que significa que seu arquivo nunca sai do seu computador.</p>
+            <ul>
+                <li><strong>Privacidade Total:</strong> O processamento é local.</li>
+                <li><strong>Sem Instalação:</strong> Funciona em qualquer dispositivo com navegador.</li>
+                <li><strong>Rápido:</strong> Carregamento instantâneo de páginas.</li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        let pdfDoc = null,
+            pageNum = 1,
+            pageRendering = false,
+            pageNumPending = null,
+            scale = 1.5,
+            canvas = document.getElementById('pdf-canvas'),
+            ctx = canvas.getContext('2d');
+
+        const uploadSection = document.getElementById('upload-section');
+        const viewerSection = document.getElementById('viewer-section');
+        const fileInput = document.getElementById('pdf-upload');
+
+        fileInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    const typedarray = new Uint8Array(this.result);
+                    loadPDF(typedarray);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+        function loadPDF(data) {
+            pdfjsLib.getDocument(data).promise.then(pdfDoc_ => {
+                pdfDoc = pdfDoc_;
+                document.getElementById('page-count').textContent = pdfDoc.numPages;
+                
+                uploadSection.classList.add('hidden');
+                viewerSection.classList.remove('hidden');
+                
+                renderPage(pageNum);
+            });
+        }
+
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(page => {
+                const viewport = page.getViewport({ scale: scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                const renderTask = page.render(renderContext);
+
+                renderTask.promise.then(() => {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+
+            document.getElementById('page-num').textContent = num;
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        document.getElementById('prev-page').addEventListener('click', () => {
+            if (pageNum <= 1) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+        });
+
+        document.getElementById('next-page').addEventListener('click', () => {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            queueRenderPage(pageNum);
+        });
+
+        document.getElementById('new-file').addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Drag and drop
+        uploadSection.addEventListener('dragover', e => {
+            e.preventDefault();
+            uploadSection.style.borderColor = 'var(--primary-color)';
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.style.borderColor = '#e2e8f0';
+        });
+
+        uploadSection.addEventListener('drop', e => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    const typedarray = new Uint8Array(this.result);
+                    loadPDF(typedarray);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+    </script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Ferramentas Rápidas. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>
